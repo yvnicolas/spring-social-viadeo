@@ -110,7 +110,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 
 	@Test
 	public void getCurrentContacts() {
-		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/me/contacts?access_token=ACCESS_TOKEN&user_detail=full&limit=20").build())).andExpect(method(GET))
+		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/me/contacts?access_token=ACCESS_TOKEN&user_detail=full&limit=20&page=1").build())).andExpect(method(GET))
 				.andRespond(withSuccess(jsonResource("testdata/full-contacts-for-me"), MediaType.APPLICATION_JSON));
 
 		List<ViadeoProfile> contacts = viadeo.userOperations().getContacts(20);
@@ -126,7 +126,8 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 
 	@Test
 	public void getContactsForId() {
-		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/EjtftevbyiugaIfDfVizDgymxg/contacts?access_token=ACCESS_TOKEN&user_detail=full&limit=20").build()))
+		// YNI : rajout de "Page = 1" à la fin de la requete. A verifier si ca marche effectivement le serveur.
+		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/EjtftevbyiugaIfDfVizDgymxg/contacts?access_token=ACCESS_TOKEN&user_detail=full&limit=20&page=1").build()))
 				.andExpect(method(GET)).andRespond(withSuccess(jsonResource("testdata/full-contacts-for-id"), MediaType.APPLICATION_JSON));
 
 		List<ViadeoProfile> contacts = viadeo.userOperations().getContacts("EjtftevbyiugaIfDfVizDgymxg", 20);
