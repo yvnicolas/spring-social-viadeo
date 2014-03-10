@@ -15,8 +15,6 @@
 */
 package org.springframework.social.viadeo.api.impl.json;
 
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.module.SimpleModule;
 import org.springframework.social.viadeo.api.Career;
 import org.springframework.social.viadeo.api.Comment;
 import org.springframework.social.viadeo.api.Company;
@@ -37,6 +35,9 @@ import org.springframework.social.viadeo.api.impl.InboxMessagesResult;
 import org.springframework.social.viadeo.api.impl.JobsResult;
 import org.springframework.social.viadeo.api.impl.Likes;
 import org.springframework.social.viadeo.api.impl.VisitCards;
+
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
  * Jackson module for setting up mixin annotations on Viadeo model types. This

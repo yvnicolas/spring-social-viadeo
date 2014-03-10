@@ -18,12 +18,9 @@ package org.springframework.social.viadeo.api.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.social.test.client.RequestMatchers.body;
-import static org.springframework.social.test.client.RequestMatchers.method;
-import static org.springframework.social.test.client.RequestMatchers.requestTo;
-import static org.springframework.social.test.client.ResponseCreators.withResponse;
+import static org.springframework.http.HttpMethod.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -31,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.junit.Test;
+import org.springframework.http.MediaType;
 import org.springframework.social.NotAuthorizedException;
 import org.springframework.social.support.URIBuilder;
 import org.springframework.social.viadeo.api.Comment;
@@ -48,7 +46,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getCurrentUser() throws ParseException {
 		mockServer.expect(requestTo("https://api.viadeo.com/me?access_token=ACCESS_TOKEN")).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/full-profile-me"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/full-profile-me"), MediaType.APPLICATION_JSON));
 
 		ViadeoProfile profile = viadeo.userOperations().getUserProfile();
 		assertEquals("EjtftevbyiugaIfDfVizDgymxg", profile.getId());
@@ -83,7 +81,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getUserProfileById() throws ParseException {
 		unauthorizedMockServer.expect(requestTo("https://api.viadeo.com/EjtftevbyiugaIfDfVizDgymxg")).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/full-profile-by-id"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/full-profile-by-id"), MediaType.APPLICATION_JSON));
 
 		ViadeoProfile profile = unauthorizedViadeo.userOperations().getUserProfile("EjtftevbyiugaIfDfVizDgymxg");
 		assertEquals("EjtftevbyiugaIfDfVizDgymxg", profile.getId());
@@ -113,7 +111,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getCurrentContacts() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/me/contacts?access_token=ACCESS_TOKEN&user_detail=full&limit=20").build())).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/full-contacts-for-me"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/full-contacts-for-me"), MediaType.APPLICATION_JSON));
 
 		List<ViadeoProfile> contacts = viadeo.userOperations().getContacts(20);
 		assertNotNull(contacts);
@@ -129,7 +127,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getContactsForId() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/EjtftevbyiugaIfDfVizDgymxg/contacts?access_token=ACCESS_TOKEN&user_detail=full&limit=20").build()))
-				.andExpect(method(GET)).andRespond(withResponse(jsonResource("testdata/full-contacts-for-id"), responseHeaders));
+				.andExpect(method(GET)).andRespond(withSuccess(jsonResource("testdata/full-contacts-for-id"), MediaType.APPLICATION_JSON));
 
 		List<ViadeoProfile> contacts = viadeo.userOperations().getContacts("EjtftevbyiugaIfDfVizDgymxg", 20);
 		assertNotNull(contacts);
@@ -145,7 +143,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getCurrentNewsFeed() throws ParseException {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/me/home_newsfeed?access_token=ACCESS_TOKEN&user_detail=full&limit=50").build())).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/full-home_newsfeed-for-me"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/full-home_newsfeed-for-me"), MediaType.APPLICATION_JSON));
 
 		List<News> news = viadeo.userOperations().getNewsFeed();
 		assertNotNull(news);
@@ -185,7 +183,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getNewsFeedForId() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/EjtftevbyiugaIfDfVizDgymxg/home_newsfeed?access_token=ACCESS_TOKEN&user_detail=full&limit=50").build()))
-				.andExpect(method(GET)).andRespond(withResponse(jsonResource("testdata/full-home_newsfeed-for-id"), responseHeaders));
+				.andExpect(method(GET)).andRespond(withSuccess(jsonResource("testdata/full-home_newsfeed-for-id"), MediaType.APPLICATION_JSON));
 
 		List<News> news = viadeo.userOperations().getNewsFeed("EjtftevbyiugaIfDfVizDgymxg");
 		assertNotNull(news);
@@ -202,7 +200,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getCurrentUserFeed() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/me/newsfeed?access_token=ACCESS_TOKEN&user_detail=full&limit=50").build())).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/full-newsfeed-for-me"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/full-newsfeed-for-me"), MediaType.APPLICATION_JSON));
 
 		List<News> news = viadeo.userOperations().getUserFeed();
 		assertNotNull(news);
@@ -218,7 +216,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getUserFeedForId() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/EjtftevbyiugaIfDfVizDgymxg/newsfeed?access_token=ACCESS_TOKEN&user_detail=full&limit=50").build()))
-				.andExpect(method(GET)).andRespond(withResponse(jsonResource("testdata/full-newsfeed-for-id"), responseHeaders));
+				.andExpect(method(GET)).andRespond(withSuccess(jsonResource("testdata/full-newsfeed-for-id"), MediaType.APPLICATION_JSON));
 
 		List<News> news = viadeo.userOperations().getUserFeed("EjtftevbyiugaIfDfVizDgymxg");
 		assertNotNull(news);
@@ -234,7 +232,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getCurrentExperiences() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/me/career?access_token=ACCESS_TOKEN&user_detail=full").build())).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/career-for-me"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/career-for-me"), MediaType.APPLICATION_JSON));
 
 		List<Experience> experiences = viadeo.userOperations().getExperiences();
 		assertNotNull(experiences);
@@ -250,7 +248,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getExperiencesForId() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/EjtftevbyiugaIfDfVizDgymxg/career?access_token=ACCESS_TOKEN&user_detail=full").build()))
-				.andExpect(method(GET)).andRespond(withResponse(jsonResource("testdata/career-for-id"), responseHeaders));
+				.andExpect(method(GET)).andRespond(withSuccess(jsonResource("testdata/career-for-id"), MediaType.APPLICATION_JSON));
 
 		List<Experience> experiences = viadeo.userOperations().getExperiences("EjtftevbyiugaIfDfVizDgymxg");
 		assertNotNull(experiences);
@@ -278,7 +276,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void updateStatus() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/status?access_token=ACCESS_TOKEN").build())).andExpect(method(POST))
-				.andExpect(body("message=Mon+nouveau+status")).andRespond(withResponse("STATUS SENT", responseHeaders));
+				.andExpect(content().string("message=Mon+nouveau+status")).andRespond(withSuccess("STATUS SENT", MediaType.APPLICATION_JSON));
 
 		viadeo.userOperations().updateStatus("Mon nouveau status");
 		mockServer.verify();
@@ -287,7 +285,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void search() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/search/users?access_token=ACCESS_TOKEN&user_detail=full&keyword=Vincent+DEVILLERS&limit=50").build()))
-				.andExpect(method(GET)).andRespond(withResponse(jsonResource("testdata/search-contacts"), responseHeaders));
+				.andExpect(method(GET)).andRespond(withSuccess(jsonResource("testdata/search-contacts"), MediaType.APPLICATION_JSON));
 
 		List<ViadeoProfile> contacts = viadeo.userOperations().search("Vincent DEVILLERS");
 		assertNotNull(contacts);
@@ -303,7 +301,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getCurrentContactCards() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/me/contact_cards?access_token=ACCESS_TOKEN").build())).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/contact-cards-for-me"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/contact-cards-for-me"), MediaType.APPLICATION_JSON));
 
 		List<ContactCards> contactCards = viadeo.userOperations().getContactCards();
 		assertNotNull(contactCards);
@@ -339,7 +337,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getContactCardsForId() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/EjtftevbyiugaIfDfVizDgymxg/contact_cards?access_token=ACCESS_TOKEN").build())).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/contact-cards-for-id"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/contact-cards-for-id"), MediaType.APPLICATION_JSON));
 
 		List<ContactCards> contactCards = viadeo.userOperations().getContactCards("EjtftevbyiugaIfDfVizDgymxg");
 		assertNotNull(contactCards);
@@ -375,7 +373,7 @@ public class UserTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getCurrentInboxMessages() {
 		mockServer.expect(requestTo(URIBuilder.fromUri("https://api.viadeo.com/me/inbox?access_token=ACCESS_TOKEN&user_detail=full&limit=50").build())).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/inbox-messages-for-me"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/inbox-messages-for-me"), MediaType.APPLICATION_JSON));
 
 		List<InboxMessage> inboxMessages = viadeo.userOperations().getInboxMessages();
 		assertNotNull(inboxMessages);

@@ -19,13 +19,14 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
-import org.codehaus.jackson.map.exc.UnrecognizedPropertyException;
 import org.springframework.social.MissingAuthorizationException;
 import org.springframework.social.support.URIBuilder;
 import org.springframework.social.viadeo.api.GraphAPIException;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.ResourceAccessException;
+
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 abstract class AbstractViadeoOperations {
 
@@ -54,7 +55,7 @@ abstract class AbstractViadeoOperations {
 
 	protected void requireAuthorization() {
 		if (!isAuthorized) {
-			throw new MissingAuthorizationException();
+			throw new MissingAuthorizationException(null);
 		}
 	}
 

@@ -15,14 +15,13 @@
 */
 package org.springframework.social.viadeo.api.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
+//import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+//import org.springframework.social.NotAuthorizedException;
+//import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
+//import org.springframework.social.support.ClientHttpRequestFactorySelector;
+//import org.springframework.social.support.URIBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-import org.springframework.social.NotAuthorizedException;
 import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
 import org.springframework.social.support.ClientHttpRequestFactorySelector;
 import org.springframework.social.support.URIBuilder;
@@ -32,6 +31,8 @@ import org.springframework.social.viadeo.api.JobOperations;
 import org.springframework.social.viadeo.api.UserOperations;
 import org.springframework.social.viadeo.api.Viadeo;
 import org.springframework.social.viadeo.api.impl.json.ViadeoModule;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * <p>
@@ -58,6 +59,9 @@ public class ViadeoTemplate extends AbstractOAuth2ApiBinding implements Viadeo {
 	private InboxMessageOperations inboxMessageOperations;
 
 	private final String accessToken;
+	
+	private ObjectMapper objectMapper;
+
 
 	/**
 	 * Create a new instance of ViadeoTemplate. This constructor creates a new
@@ -90,7 +94,7 @@ public class ViadeoTemplate extends AbstractOAuth2ApiBinding implements Viadeo {
 	}
 
 	private void initialize() {
-		registerViadeoJsonModule();
+//		registerViadeoJsonModule();
 		// Wrap the request factory with a BufferingClientHttpRequestFactory so
 		// that the error handler can do repeat reads on the response.getBody()
 		super.setRequestFactory(ClientHttpRequestFactorySelector
@@ -106,22 +110,14 @@ public class ViadeoTemplate extends AbstractOAuth2ApiBinding implements Viadeo {
 		inboxMessageOperations = new InboxMessageTemplate(this, isAuthorized());
 	}
 
-	private void registerViadeoJsonModule() {
-		ObjectMapper objectMapper = new ObjectMapper();
+	@Override
+	protected MappingJackson2HttpMessageConverter getJsonMessageConverter() {
+		MappingJackson2HttpMessageConverter converter = super.getJsonMessageConverter();
+		objectMapper = new ObjectMapper();				
 		objectMapper.registerModule(new ViadeoModule());
+		converter.setObjectMapper(objectMapper);		
+		return converter;
 
-		List<MediaType> supportedMediaTypes = new ArrayList<MediaType>(1);
-		supportedMediaTypes.add(MediaType.ALL);
-
-		List<HttpMessageConverter<?>> converters = getRestTemplate()
-				.getMessageConverters();
-		for (HttpMessageConverter<?> converter : converters) {
-			if (converter instanceof MappingJacksonHttpMessageConverter) {
-				MappingJacksonHttpMessageConverter jsonConverter = (MappingJacksonHttpMessageConverter) converter;
-				jsonConverter.setSupportedMediaTypes(supportedMediaTypes);
-				jsonConverter.setObjectMapper(objectMapper);
-			}
-		}
 	}
 
 	public URIBuilder withAccessToken(String uri) {

@@ -15,15 +15,29 @@
  */
 package org.springframework.social.viadeo.api.impl;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.social.test.client.MockRestServiceServer;
 import org.springframework.social.viadeo.api.impl.ViadeoTemplate;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.unitils.thirdparty.org.apache.commons.io.IOUtils;
+
+
 
 public abstract class AbstractViadeoApiTest {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AbstractViadeoApiTest.class);
+	
 	protected static final String ACCESS_TOKEN = "ACCESS_TOKEN";
 
 	protected ViadeoTemplate viadeo;
@@ -42,7 +56,15 @@ public abstract class AbstractViadeoApiTest {
 		unauthorizedMockServer = MockRestServiceServer.createServer(unauthorizedViadeo.getRestTemplate());
 	}
 
-	protected Resource jsonResource(String filename) {
-		return new ClassPathResource(filename + ".json", getClass());
+	protected String jsonResource(String filename)  {
+		InputStream is;
+		try {
+			is = new FileInputStream(new File("src/test/java/org/springframework/social/viadeo/api/impl/"+ filename + ".json"));
+			return IOUtils.toString(is);
+		} catch (IOException e) {
+			logger.error(String.format("Cannot read Json File %s.json: %s", filename, e.getMessage()),e);
+			return ("");
+		}
+		
 	}
 }

@@ -16,14 +16,14 @@
 package org.springframework.social.viadeo.api.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.social.test.client.RequestMatchers.method;
-import static org.springframework.social.test.client.RequestMatchers.requestTo;
-import static org.springframework.social.test.client.ResponseCreators.withResponse;
+import static org.springframework.http.HttpMethod.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 import java.util.List;
 
 import org.junit.Test;
+import org.springframework.http.MediaType;
 import org.springframework.social.viadeo.api.Job;
 
 public class JobTemplateTest extends AbstractViadeoApiTest {
@@ -31,7 +31,7 @@ public class JobTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void searchJobs() {
 		unauthorizedMockServer.expect(requestTo("https://api.viadeo.com/search/jobs?q=java&limit=50")).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/job-search"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/job-search"), MediaType.APPLICATION_JSON));
 
 		List<Job> jobs = unauthorizedViadeo.jobOperations().search("java");
 		assertEquals(50, jobs.size());
@@ -41,7 +41,7 @@ public class JobTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getJobWithAndId() {
 		unauthorizedMockServer.expect(requestTo("https://api.viadeo.com/hEVdvbpdwpmtumjAmIhnhuzbhA")).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/detailled-job"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/detailled-job"), MediaType.APPLICATION_JSON));
 
 		Job job = unauthorizedViadeo.jobOperations().getJob("hEVdvbpdwpmtumjAmIhnhuzbhA");
 

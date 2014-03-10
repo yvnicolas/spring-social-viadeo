@@ -1,12 +1,12 @@
 package org.springframework.social.viadeo.api.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.social.test.client.RequestMatchers.method;
-import static org.springframework.social.test.client.RequestMatchers.requestTo;
-import static org.springframework.social.test.client.ResponseCreators.withResponse;
+import static org.springframework.http.HttpMethod.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 import org.junit.Test;
+import org.springframework.http.MediaType;
 import org.springframework.social.NotAuthorizedException;
 import org.springframework.social.viadeo.api.InboxMessage;
 
@@ -15,7 +15,7 @@ public class InboxMessageTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getInboxMessageWithId() {
 		mockServer.expect(requestTo("https://api.viadeo.com/pvtweOoAcdjciVejhoDylwEjpmdavkvfatuVlqbmpvpucdbhhcAf?access_token=ACCESS_TOKEN&user_detail=full")).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/detailled-inbox-message"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/detailled-inbox-message"), MediaType.APPLICATION_JSON));
 
 		InboxMessage inboxMessage = viadeo.inboxMessageOperations().getInboxMessage("pvtweOoAcdjciVejhoDylwEjpmdavkvfatuVlqbmpvpucdbhhcAf");
 

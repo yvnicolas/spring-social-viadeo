@@ -16,14 +16,14 @@
 package org.springframework.social.viadeo.api.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.social.test.client.RequestMatchers.method;
-import static org.springframework.social.test.client.RequestMatchers.requestTo;
-import static org.springframework.social.test.client.ResponseCreators.withResponse;
+import static org.springframework.http.HttpMethod.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 import java.util.List;
 
 import org.junit.Test;
+import org.springframework.http.MediaType;
 import org.springframework.social.NotAuthorizedException;
 import org.springframework.social.viadeo.api.Group;
 
@@ -32,7 +32,7 @@ public class GroupTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void searchGroups() {
 		mockServer.expect(requestTo("https://api.viadeo.com/search/groups?access_token=ACCESS_TOKEN&q=viadeo&limit=50")).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/group-search"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/group-search"), MediaType.APPLICATION_JSON));
 
 		List<Group> groups = viadeo.groupOperations().search("viadeo");
 		assertEquals(50, groups.size());
@@ -47,7 +47,7 @@ public class GroupTemplateTest extends AbstractViadeoApiTest {
 	@Test
 	public void getGroupWithAndId() {
 		mockServer.expect(requestTo("https://api.viadeo.com/agvhhkokasejibsVdfvxdquioO?access_token=ACCESS_TOKEN")).andExpect(method(GET))
-				.andRespond(withResponse(jsonResource("testdata/detailed-group"), responseHeaders));
+				.andRespond(withSuccess(jsonResource("testdata/detailed-group"), MediaType.APPLICATION_JSON));
 
 		Group group = viadeo.groupOperations().getGroup("agvhhkokasejibsVdfvxdquioO");
 
